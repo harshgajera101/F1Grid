@@ -18,10 +18,10 @@
     <nav class="f1-navbar-3d">
   <div class="nav-inner">
 
-    <!-- LEFT: LOGO -->
+    <!-- LEFT:  LOGO -->
     <div class="nav-left">
       <a href="{% url 'tweet_list' %}" class="nav-logo">
-        <span class="flag">🏁</span>
+        <img src="{% static 'images/favicon.png' %}" alt="F1Grid Logo" class="logo-img">
         <span class="logo-text">F1<span>Grid</span></span>
       </a>
     </div>
@@ -34,7 +34,7 @@
       <a href="#" class="nav-link">Drivers</a>
     </div>
 
-    <!-- RIGHT: ACTIONS -->
+    <!-- RIGHT:  ACTIONS -->
     <div class="nav-right">
 
   {% if user.is_authenticated %}
