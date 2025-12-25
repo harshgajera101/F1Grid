@@ -53,12 +53,12 @@
 <div class="race-weekend-strip">
   <div class="race-left">
     <span class="race-badge live">LIVE</span>
-    <h3>Italian Grand Prix</h3>
-    <p>Monza • Race Weekend Discussion</p>
+    <h3>Australian Grand Prix</h3>
+    <p> Melbourne • Race Weekend Discussion</p>
   </div>
 
   <div class="race-right">
-    <span class="race-time">Sunday • Lights Out 6:30 PM IST</span>
+    <span class="race-time">Sunday • 9:00 AM IST</span>
   </div>
 </div>
 
@@ -68,50 +68,57 @@
 
   <!-- FEED -->
   <div class="feed-column">
-    <div class="feed-filter-bar">
-      <span class="filter-label">Filter:</span>
+    
+    <!-- WORKING FILTER FORM -->
+    <form method="get" action="{% url 'tweet_list' %}" class="feed-filter-bar" id="filterForm">
+      <span class="filter-label">Filter: </span>
 
-      <select class="filter-select">
-        <option>All Posts</option>
-        <option>Opinion</option>
-        <option>Meme</option>
-        <option>Poll</option>
-        <option>Race</option>
+      <!-- POST TYPE FILTER -->
+      <select name="type" class="filter-select" onchange="document.getElementById('filterForm').submit()">
+        <option value="">All Posts</option>
+        {% for code, label in post_types %}
+          <option value="{{ code }}" {% if request.GET.type == code %}selected{% endif %}>
+            {{ label }}
+          </option>
+        {% endfor %}
       </select>
 
-      <select class="filter-select">
-        <option>All Teams</option>
-        <option>Red Bull</option>
-        <option>Ferrari</option>
-        <option>Mercedes</option>
-        <option>McLaren</option>
+      <!-- TEAM FILTER -->
+      <select name="team" class="filter-select" onchange="document.getElementById('filterForm').submit()">
+        <option value="">All Teams</option>
+        {% for team in teams %}
+          <option value="{{ team.id }}" {% if request.GET.team == team.id|stringformat:"s" %}selected{% endif %}>
+            {{ team.name }}
+          </option>
+        {% endfor %}
       </select>
 
-      <select class="filter-select">
-        <option>All Drivers</option>
-        <option>Verstappen</option>
-        <option>Hamilton</option>
-        <option>Leclerc</option>
-        <option>Norris</option>
+      <!-- DRIVER FILTER -->
+      <select name="driver" class="filter-select" onchange="document.getElementById('filterForm').submit()">
+        <option value="">All Drivers</option>
+        {% for driver in drivers %}
+          <option value="{{ driver.id }}" {% if request.GET.driver == driver.id|stringformat:"s" %}selected{% endif %}>
+            {{ driver.name }}
+          </option>
+        {% endfor %}
       </select>
-    </div>
 
+      <!-- CLEAR FILTERS BUTTON -->
+      {% if request.GET.type or request.GET.team or request.GET.driver %}
+        <a href="{% url 'tweet_list' %}" class="btn-clear-filter">Clear</a>
+      {% endif %}
+    </form>
+
+    <!-- POSTS -->
     {% if tweets %}
       {% for tweet in tweets %}
         {% include "tweet/components/post_card.html" %}
       {% endfor %}
     {% else %}
-      <!-- Skeleton placeholders -->
-      <div class="post-card skeleton">
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line short"></div>
-        <div class="skeleton-line"></div>
-      </div>
-
-      <div class="post-card skeleton">
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line short"></div>
-        <div class="skeleton-line"></div>
+      <div class="post-card">
+        <p style="text-align: center; color: var(--text-muted);">
+          No posts found matching your filters.
+        </p>
       </div>
     {% endif %}
 
@@ -119,31 +126,73 @@
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
+    
+    <!-- RACE WEEKEND CARD -->
     <div class="sidebar-card">
       <h4>🏁 Race Weekend</h4>
       <p class="sidebar-muted">Next GP</p>
-      <strong>Italian Grand Prix</strong>
+      <strong>Australian Grand Prix</strong>
       <span class="race-status live">LIVE</span>
     </div>
 
+    <!-- TRENDING DRIVERS -->
     <div class="sidebar-card">
       <h4>🔥 Trending Drivers</h4>
       <ul class="sidebar-list">
-        <li>Max Verstappen</li>
-        <li>Charles Leclerc</li>
-        <li>Lando Norris</li>
-        <li>Lewis Hamilton</li>
+        <li>🇬🇧 Lando Norris</li>
+        <li>🇳🇱 Max Verstappen</li>
+        <li>🇦🇺 Oscar Piastri</li>
+        <li>🇲🇨 Charles Leclerc</li>
+        <li>🇬🇧 Lewis Hamilton</li>
       </ul>
     </div>
 
+    <!-- QUICK STATS -->
     <div class="sidebar-card">
-      <h4>📊 Active Polls</h4>
+      <h4>⚡ Quick Stats</h4>
       <ul class="sidebar-list">
-        <li>Who wins the race?</li>
-        <li>Best overtake today?</li>
-        <li>Driver of the day?</li>
+        <li>Races Left: 0</li>
+        <li>Active Posts: {{ tweets.count }}</li>
+        <li>Total Teams: {{ teams.count }}</li>
+        <li>Total Drivers: {{ drivers.count }}</li>
       </ul>
     </div>
+
+    <!-- CHAMPIONSHIP STANDINGS -->
+    <div class="sidebar-card">
+      <h4>🏆 Drivers' Championship</h4>
+      <ul class="sidebar-list">
+        <li>1. L. Norris - 423 pts</li>
+        <li>2. M. Verstappen - 421 pts</li>
+        <li>3. O. Piastri - 410 pts</li>
+        <li>4. G. Russell - 319 pts</li>
+        <li>5. C. Leclerc - 242 pts</li>
+      </ul>
+    </div>
+
+    <!-- CONSTRUCTORS -->
+    <div class="sidebar-card">
+      <h4>🏁 Constructors</h4>
+      <ul class="sidebar-list">
+        <li>1. McLaren - 833 pts</li>
+        <li>2. Mercedes - 469 pts</li>
+        <li>3. Red Bull - 451 pts</li>
+        <li>4. Ferrari - 398 pts</li>
+        <li>5. Williams - 137 pts</li>
+      </ul>
+    </div>
+
+    <!-- ACTIVE POLLS -->
+    <div class="sidebar-card">
+      <h4>📊 Hot Topics</h4>
+      <ul class="sidebar-list">
+        <li>🗳️ Who wins the title?</li>
+        <li>🏎️ Best team strategy?</li>
+        <li>💨 Fastest qualifier?</li>
+        <li>🏆 Driver of the year?</li>
+      </ul>
+    </div>
+
   </aside>
 
 </section>
