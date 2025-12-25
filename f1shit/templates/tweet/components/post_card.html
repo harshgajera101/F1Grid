@@ -56,9 +56,9 @@
   {% else %}
     <!-- RESULTS MODE -->
     {% for option in tweet.poll.options.all %}
-      {% with total=tweet.total_votes %}
+      {% with total=tweet.poll.total_votes votes=option.votes_count %}
         {% if total > 0 %}
-          {% widthratio option.votes total 100 as percent %}
+          {% widthratio votes total 100 as percent %}
         {% else %}
           {% widthratio 0 1 0 as percent %}
         {% endif %}
@@ -66,7 +66,7 @@
         <div class="poll-result">
           <div class="poll-label">
             <span>{{ option.text }}</span>
-            <span>{{ percent }}%</span>
+            <span class="vote-count">{{ votes }} vote{{ votes|pluralize }}</span>
           </div>
 
           <div class="poll-bar">
@@ -75,6 +75,11 @@
         </div>
       {% endwith %}
     {% endfor %}
+    
+    <!-- TOTAL VOTES -->
+    <div class="poll-total">
+      Total:  {{ tweet.poll.total_votes }} vote{{ tweet.poll.total_votes|pluralize }}
+    </div>
   {% endif %}
 
 </div>

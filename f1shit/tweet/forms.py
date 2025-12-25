@@ -9,7 +9,7 @@ class TweetForm(forms.ModelForm):
         model = Tweet
         fields = ['text', 'photo', 'post_type', 'team', 'driver']
         widgets = {
-            'text': forms.Textarea(
+            'text': forms. Textarea(
                 attrs={
                     'rows': 3,
                     'placeholder': "Share your F1 thoughts..."
@@ -19,11 +19,10 @@ class TweetForm(forms.ModelForm):
 
 
 class PollOptionForm(forms.Form):
-    option1 = forms.CharField(max_length=100, required=False, label="Option 1")
-    option2 = forms.CharField(max_length=100, required=False, label="Option 2")
-    option3 = forms.CharField(max_length=100, required=False, label="Option 3")
-    option4 = forms.CharField(max_length=100, required=False, label="Option 4")
-
+    option_1 = forms.CharField(max_length=100, required=False, label="Option 1")
+    option_2 = forms.CharField(max_length=100, required=False, label="Option 2")
+    option_3 = forms.CharField(max_length=100, required=False, label="Option 3")
+    option_4 = forms.CharField(max_length=100, required=False, label="Option 4")
 
 
 class UserRegisterForm(UserCreationForm):

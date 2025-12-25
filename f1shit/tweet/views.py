@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib.auth.models import User
@@ -70,26 +71,33 @@ def tweet_create(request):
         if form.is_valid():
             tweet = form.save(commit=False)
             tweet.user = request.user
-            tweet.save()
+            tweet. save()
 
             if tweet.post_type == "POLL":
-                options = [
-                    poll_form.cleaned_data.get("option_1"),
-                    poll_form.cleaned_data.get("option_2"),
-                    poll_form.cleaned_data.get("option_3"),
-                    poll_form.cleaned_data.get("option_4"),
-                ]   
-                options = [o for o in options if o]
+                # VALIDATE POLL FORM BEFORE ACCESSING cleaned_data
+                if poll_form.is_valid():
+                    options = [
+                        poll_form.cleaned_data.get("option_1"),
+                        poll_form.cleaned_data.get("option_2"),
+                        poll_form.cleaned_data.get("option_3"),
+                        poll_form.cleaned_data.get("option_4"),
+                    ]   
+                    options = [o for o in options if o]
 
-                if len(options) < 2:
-                    messages.error(request, "Poll must have at least 2 options.")
+                    if len(options) < 2:
+                        messages.error(request, "Poll must have at least 2 options.")
+                        tweet.delete()
+                        return redirect("tweet_create")
+
+                    poll = Poll.objects.create(tweet=tweet)
+
+                    for opt in options:
+                        PollOption.objects.create(poll=poll, text=opt)
+                else:
+                    # If poll form is invalid, delete tweet and show error
+                    messages.error(request, "Please fill in poll options correctly.")
                     tweet.delete()
                     return redirect("tweet_create")
-
-                poll = Poll.objects.create(tweet=tweet)
-
-                for opt in options:
-                    PollOption.objects.create(poll=poll, text=opt)
 
             return redirect("tweet_list")
 
@@ -114,18 +122,18 @@ def tweet_edit(request, tweet_id):
     else:
         form = TweetForm(instance=tweet)
 
-    return render(request, "tweet/tweet_form.html", {"form": form})
+    return render(request, "tweet_form.html", {"form": form})  # CHANGED THIS
 
 
 @login_required
 def tweet_delete(request, tweet_id):
-    tweet = get_object_or_404(Tweet, id=tweet_id, user=request.user)
+    tweet = get_object_or_404(Tweet, id=tweet_id, user=request. user)
 
     if request.method == "POST":
         tweet.delete()
         return redirect("tweet_list")
 
-    return render(request, "tweet/tweet_confirm_delete.html", {"tweet": tweet})
+    return render(request, "tweet_confirm_delete.html", {"tweet": tweet})  # CHANGED THIS
 
 
 # ===========================
