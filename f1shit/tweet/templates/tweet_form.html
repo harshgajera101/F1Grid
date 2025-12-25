@@ -24,7 +24,7 @@
 
       {% if poll_form %}
         <hr />
-        <div id="poll-section" style="display:none;">
+        <div id="poll-section" style="display: none;">
           <h6 class="text-warning mt-3 mb-2">Poll Options</h6>
           {{ poll_form.as_p }}
         </div>
@@ -43,6 +43,7 @@
 </div>
 
 <script>
+  // Poll section toggle
   const postType = document.getElementById("id_post_type");
   const pollSection = document.getElementById("poll-section");
 
@@ -53,7 +54,47 @@
 
   postType.addEventListener("change", togglePoll);
   togglePoll();
-</script>
 
+  // Driver filtering based on team selection
+  const teamSelect = document.getElementById("id_team");
+  const driverSelect = document.getElementById("id_driver");
+
+  // Store all driver options
+  const allDriverOptions = Array.from(driverSelect.options);
+
+  function filterDrivers() {
+    const selectedTeamId = teamSelect.value;
+
+    // Clear current driver options
+    driverSelect.innerHTML = '<option value="">---------</option>';
+
+    if (!selectedTeamId) {
+      // If no team selected, show all drivers
+      allDriverOptions. forEach(option => {
+        if (option.value) {
+          driverSelect.appendChild(option. cloneNode(true));
+        }
+      });
+    } else {
+      // Fetch drivers for selected team
+      fetch(`/tweet/api/drivers/?team_id=${selectedTeamId}`)
+        .then(response => response.json())
+        .then(drivers => {
+          drivers.forEach(driver => {
+            const option = document.createElement('option');
+            option.value = driver.id;
+            option. textContent = driver.name;
+            driverSelect.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching drivers:', error);
+        });
+    }
+  }
+
+  // Filter drivers when team changes
+  teamSelect.addEventListener("change", filterDrivers);
+</script>
 
 {% endblock %}

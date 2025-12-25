@@ -201,9 +201,13 @@ def react_to_tweet(request, tweet_id, reaction_type):
 # AJAX
 # ===========================
 
+
 def get_drivers_by_team(request):
-    team_id = request.GET.get("team_id")
-    drivers = Driver.objects.filter(team_id=team_id).values("id", "name")
+    team_id = request. GET.get("team_id")
+    if team_id:
+        drivers = Driver.objects.filter(team_id=team_id).values("id", "name")
+    else:
+        drivers = Driver. objects.all().values("id", "name")
     return JsonResponse(list(drivers), safe=False)
 
 
