@@ -62,17 +62,23 @@ class Tweet(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def fast_lap_count(self):
-        return self.reactions.filter(reaction_type='FAST_LAP').count()
+    def fire_count(self):
+        return self. reactions.filter(reaction_type='FIRE').count()
 
-    def push_count(self):
-        return self.reactions.filter(reaction_type='PUSH').count()
+    def trophy_count(self):
+        return self.reactions.filter(reaction_type='TROPHY').count()
 
-    def team_order_count(self):
-       return self.reactions.filter(reaction_type='TEAM').count()
+    def flag_count(self):
+        return self.reactions.filter(reaction_type='FLAG').count()
 
-    def champ_count(self):
-        return self.reactions.filter(reaction_type='CHAMP').count()
+    def rocket_count(self):
+        return self.reactions.filter(reaction_type='ROCKET').count()
+
+    def crash_count(self):
+        return self.reactions.filter(reaction_type='CRASH').count()
+    
+    def total_reactions(self):
+        return self. reactions.count()
 
     def __str__(self):
         return f"{self.user.username} | {self.post_type} | {self.text[:20]}"
@@ -85,10 +91,11 @@ class Tweet(models.Model):
 class Reaction(models.Model):
 
     REACTION_CHOICES = [
-        ('FAST_LAP', '🔥 Fastest Lap'),
-        ('PUSH', '🏎️ Push Push'),
-        ('TEAM', '😤 Team Orders'),
-        ('CHAMP', '🏆 Champion Move'),
+        ('FIRE', '🔥'),      # Fastest Lap / Hot Take
+        ('TROPHY', '🏆'),    # Champion Move
+        ('FLAG', '🏁'),      # Checkered Flag / Win
+        ('ROCKET', '🚀'),    # Speed / Push Push
+        ('CRASH', '💥'),     # Big Moment / Incident
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -98,7 +105,7 @@ class Reaction(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('user', 'tweet', 'reaction_type')
+        unique_together = ('user', 'tweet')  # User can only give ONE reaction per tweet
 
     def __str__(self):
         return f"{self.user.username} → {self.reaction_type}"

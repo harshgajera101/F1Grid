@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+from django.db import models
 
 from .models import (
     Tweet, Reaction, Team, Driver,
@@ -186,14 +187,30 @@ def poll_vote(request, option_id):
 
 @login_required
 def react_to_tweet(request, tweet_id, reaction_type):
+    if request.method != "POST":
+        return redirect("tweet_list")
+    
     tweet = get_object_or_404(Tweet, id=tweet_id)
-
-    Reaction.objects.get_or_create(
-        user=request.user,
-        tweet=tweet,
-        reaction_type=reaction_type
-    )
-
+    
+    # Check if user already reacted to this tweet
+    existing_reaction = Reaction.objects.filter(user=request.user, tweet=tweet).first()
+    
+    if existing_reaction:
+        # If user clicked the same reaction, remove it (toggle off)
+        if existing_reaction.reaction_type == reaction_type:
+            existing_reaction.delete()
+        else:
+            # User clicked a different reaction, update it
+            existing_reaction.reaction_type = reaction_type
+            existing_reaction.save()
+    else:
+        # Create new reaction
+        Reaction.objects.create(
+            user=request.user,
+            tweet=tweet,
+            reaction_type=reaction_type
+        )
+    
     return redirect("tweet_list")
 
 
@@ -218,8 +235,46 @@ def get_drivers_by_team(request):
 def profile_view(request, username):
     profile_user = get_object_or_404(User, username=username)
     tweets = Tweet.objects.filter(user=profile_user).order_by("-created_at")
-
-    return render(request, "tweet/profile.html", {
+    
+    # Calculate stats
+    total_posts = tweets.count()
+    total_polls = tweets.filter(post_type='POLL').count()
+    total_reactions = Reaction.objects.filter(tweet__user=profile_user).count()
+    
+    # Get favorite team and driver (most posted about)
+    favorite_team = tweets.exclude(team=None).values('team__name').annotate(
+        count=models.Count('team')
+    ).order_by('-count').first()
+    
+    favorite_driver = tweets.exclude(driver=None).values('driver__name').annotate(
+        count=models.Count('driver')
+    ).order_by('-count').first()
+    
+    # Post type breakdown
+    post_breakdown = {}
+    for code, label in Tweet.POST_TYPE_CHOICES:
+        post_breakdown[label] = tweets.filter(post_type=code).count()
+    
+    # Recent activity (last 7 days)
+    from datetime import timedelta
+    from django.utils import timezone
+    last_week = timezone.now() - timedelta(days=7)
+    recent_activity = tweets.filter(created_at__gte=last_week).count()
+    
+    # Member since
+    member_since = profile_user.date_joined
+    
+    context = {
         "profile_user": profile_user,
         "tweets": tweets,
-    })
+        "total_posts": total_posts,
+        "total_polls": total_polls,
+        "total_reactions": total_reactions,
+        "favorite_team": favorite_team['team__name'] if favorite_team else "None yet",
+        "favorite_driver":  favorite_driver['driver__name'] if favorite_driver else "None yet",
+        "post_breakdown":  post_breakdown,
+        "recent_activity": recent_activity,
+        "member_since": member_since,
+    }
+    
+    return render(request, "tweet/profile.html", context)

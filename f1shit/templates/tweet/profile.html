@@ -1,47 +1,138 @@
 {% extends "layout.html" %}
 {% load static %}
 
+{% block title %}@{{ profile_user.username }} | F1Grid{% endblock %}
+
 {% block content %}
 
-<!-- ================= PROFILE HEADER ================= -->
-<section class="profile-header">
-  <div class="profile-avatar">
-    {{ profile_user.username|first|upper }}
-  </div>
+<!-- ================= PROFILE BANNER ================= -->
+<section class="profile-banner">
+  <div class="banner-pattern"></div>
+  <div class="banner-content">
+    <div class="profile-main">
+      
+      <!-- Avatar -->
+      <div class="profile-avatar-large">
+        <span class="avatar-letter">{{ profile_user.username|first|upper }}</span>
+        <div class="avatar-ring"></div>
+      </div>
 
-  <div class="profile-info">
-    <h2>@{{ profile_user.username }}</h2>
-    <p class="profile-bio">
-      Formula 1 fan • Opinions • Race weekends
-    </p>
+      <!-- User Info -->
+      <div class="profile-user-info">
+        <h1 class="profile-username">@{{ profile_user.username }}</h1>
+        <p class="profile-bio">
+          🏎️ Formula 1 Enthusiast • Race Weekends • Hot Takes • Polls
+        </p>
+        <div class="profile-meta">
+          <span class="meta-item">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 3.5a. 5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-. 868L8 8.71V3.5z"/>
+              <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+            </svg>
+            Joined {{ member_since|date:"M Y" }}
+          </span>
+          <span class="meta-item">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M11 6. 5a.5.5 0 0 1 .5-. 5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-. 5v-1z"/>
+              <path d="M3. 5 0a. 5.5 0 0 1 .5.5V1h8V. 5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V. 5a.5.5 0 0 1 .5-. 5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+            </svg>
+            {{ recent_activity }} posts this week
+          </span>
+        </div>
+      </div>
+
+    </div>
   </div>
 </section>
 
-<!-- ================= PROFILE STATS ================= -->
-<section class="profile-stats">
-  <div>
-    <strong>{{ tweets.count }}</strong>
-    <span>Posts</span>
+<!-- ================= STATS GRID ================= -->
+<section class="profile-stats-grid">
+  
+  <!-- Main Stats -->
+  <div class="stat-card stat-primary">
+    <div class="stat-icon">📝</div>
+    <div class="stat-content">
+      <span class="stat-number">{{ total_posts }}</span>
+      <span class="stat-label">Total Posts</span>
+    </div>
   </div>
-  <div>
-    <strong>F1</strong>
-    <span>Fan</span>
+
+  <div class="stat-card stat-secondary">
+    <div class="stat-icon">📊</div>
+    <div class="stat-content">
+      <span class="stat-number">{{ total_polls }}</span>
+      <span class="stat-label">Polls Created</span>
+    </div>
   </div>
-  <div>
-    <strong>Active</strong>
-    <span>Racer</span>
+
+  <div class="stat-card stat-accent">
+    <div class="stat-icon">🔥</div>
+    <div class="stat-content">
+      <span class="stat-number">{{ total_reactions }}</span>
+      <span class="stat-label">Reactions Received</span>
+    </div>
+  </div>
+
+  <div class="stat-card stat-team">
+    <div class="stat-icon">🏁</div>
+    <div class="stat-content">
+      <span class="stat-number">{{ favorite_team }}</span>
+      <span class="stat-label">Favorite Team</span>
+    </div>
+  </div>
+
+  <div class="stat-card stat-driver">
+    <div class="stat-icon">🏎️</div>
+    <div class="stat-content">
+      <span class="stat-number">{{ favorite_driver }}</span>
+      <span class="stat-label">Top Driver</span>
+    </div>
+  </div>
+
+</section>
+
+<!-- ================= POST TYPE BREAKDOWN ================= -->
+<section class="profile-breakdown">
+  <h3 class="section-title">
+    <span class="title-icon">📈</span>
+    Post Activity Breakdown
+  </h3>
+  
+  <div class="breakdown-grid">
+    {% for label, count in post_breakdown.items %}
+      <div class="breakdown-item">
+        <span class="breakdown-label">{{ label }}</span>
+        <div class="breakdown-bar-container">
+          <div class="breakdown-bar" style="width:  {% if total_posts > 0 %}{% widthratio count total_posts 100 %}{% else %}0{% endif %}%">
+            <span class="breakdown-count">{{ count }}</span>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
   </div>
 </section>
 
 <!-- ================= USER POSTS ================= -->
-<section class="profile-feed profile-post-list">
-  <h3>Posts by @{{ profile_user.username }}</h3>
+<section class="profile-posts-section">
+  <h3 class="section-title">
+    <span class="title-icon">💬</span>
+    Recent Posts ({{ total_posts }})
+  </h3>
 
-  {% for tweet in tweets %}
-    {% include "tweet/components/post_card.html" %}
-  {% empty %}
-    <p class="text-muted">No posts yet.</p>
-  {% endfor %}
+  <div class="profile-post-list">
+    {% for tweet in tweets %}
+      {% include "tweet/components/post_card.html" %}
+    {% empty %}
+      <div class="empty-state">
+        <div class="empty-icon">🏁</div>
+        <h4>No Posts Yet</h4>
+        <p>@{{ profile_user.username }} hasn't posted anything yet.</p>
+        {% if user == profile_user %}
+          <a href="{% url 'tweet_create' %}" class="btn-empty-action">Create Your First Post</a>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
 </section>
 
 {% endblock %}

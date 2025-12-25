@@ -10,6 +10,11 @@
       integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
       crossorigin="anonymous"
     />
+    <!-- RETRO FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    
     <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/png">
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <title>{% block title %} F1Grid {% endblock %}</title>
@@ -69,5 +74,70 @@
 </nav>
 
     <div class="container mt-5">{% block content %} {% endblock %}</div>
+
+    <!-- FOOTER -->
+    <footer class="f1-footer">
+      <div class="footer-container">
+        
+        <!-- Left: Brand -->
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <img src="{% static 'images/favicon.png' %}" alt="F1Grid">
+            <span class="footer-logo-text">F1<span>Grid</span></span>
+          </div>
+          <p class="footer-tagline">Where F1 fans never sleep.  🏁</p>
+        </div>
+
+        <!-- Center: Links -->
+        <div class="footer-links">
+          <div class="footer-column">
+            <h4>Community</h4>
+            <a href="{% url 'tweet_list' %}">Feed</a>
+            <a href="#">Polls</a>
+            <a href="#">Race Weekend</a>
+            <a href="#">Drivers</a>
+          </div>
+          
+          <div class="footer-column">
+            <h4>Support</h4>
+            <a href="#">Help Center</a>
+            <a href="#">Guidelines</a>
+            <a href="#">Report Issue</a>
+            <a href="#">Contact</a>
+          </div>
+          
+          <div class="footer-column">
+            <h4>Legal</h4>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Cookie Policy</a>
+          </div>
+        </div>
+
+        <!-- Right:  Stats -->
+        <div class="footer-stats">
+          <div class="stat-item">
+            <span class="stat-number">24/7</span>
+            <span class="stat-label">Race Talk</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">Live</span>
+            <span class="stat-label">Discussions</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="footer-bottom">
+        <p>© 2025 F1Grid. Built for Formula 1 fans, by Formula 1 fans.</p>
+        <div class="footer-socials">
+          <a href="#" aria-label="Twitter">🐦</a>
+          <a href="#" aria-label="Instagram">📸</a>
+          <a href="#" aria-label="Discord">💬</a>
+        </div>
+      </div>
+    </footer>
+
   </body>
 </html>

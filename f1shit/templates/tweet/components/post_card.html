@@ -39,57 +39,108 @@
   </div>
 
   <!-- ================= POLL ================= -->
-{% if tweet.post_type|lower == "poll" and tweet.poll %}
-<div class="poll-box">
+  {% if tweet.post_type|lower == "poll" and tweet.poll %}
+  <div class="poll-box">
 
-  {% if user.is_authenticated and not tweet.poll.has_voted %}
-    <!-- VOTING MODE -->
-    {% for option in tweet.poll.options.all %}
-      <form method="post" action="{% url 'poll_vote' option.id %}">
-        {% csrf_token %}
-        <button type="submit" class="poll-vote-btn">
-          {{ option.text }}
-        </button>
-      </form>
-    {% endfor %}
+    {% if user.is_authenticated and not tweet.poll.has_voted %}
+      <!-- VOTING MODE -->
+      {% for option in tweet.poll.options.all %}
+        <form method="post" action="{% url 'poll_vote' option.id %}">
+          {% csrf_token %}
+          <button type="submit" class="poll-vote-btn">
+            {{ option.text }}
+          </button>
+        </form>
+      {% endfor %}
 
-  {% else %}
-    <!-- RESULTS MODE -->
-    {% for option in tweet.poll.options.all %}
-      {% with total=tweet.poll.total_votes votes=option.votes_count %}
-        {% if total > 0 %}
-          {% widthratio votes total 100 as percent %}
-        {% else %}
-          {% widthratio 0 1 0 as percent %}
-        {% endif %}
+    {% else %}
+      <!-- RESULTS MODE -->
+      {% for option in tweet.poll.options.all %}
+        {% with total=tweet.poll.total_votes votes=option.votes_count %}
+          {% if total > 0 %}
+            {% widthratio votes total 100 as percent %}
+          {% else %}
+            {% widthratio 0 1 0 as percent %}
+          {% endif %}
 
-        <div class="poll-result">
-          <div class="poll-label">
-            <span>{{ option.text }}</span>
-            <span class="vote-count">{{ votes }} vote{{ votes|pluralize }}</span>
+          <div class="poll-result">
+            <div class="poll-label">
+              <span>{{ option.text }}</span>
+              <span class="vote-count">{{ votes }} vote{{ votes|pluralize }}</span>
+            </div>
+
+            <div class="poll-bar">
+              <div class="poll-bar-fill" style="width: {{ percent }}%"></div>
+            </div>
           </div>
+        {% endwith %}
+      {% endfor %}
+      
+      <!-- TOTAL VOTES -->
+      <div class="poll-total">
+        Total: {{ tweet.poll.total_votes }} vote{{ tweet.poll.total_votes|pluralize }}
+      </div>
+    {% endif %}
 
-          <div class="poll-bar">
-            <div class="poll-bar-fill" style="width: {{ percent }}%"></div>
-          </div>
-        </div>
-      {% endwith %}
-    {% endfor %}
-    
-    <!-- TOTAL VOTES -->
-    <div class="poll-total">
-      Total:  {{ tweet.poll.total_votes }} vote{{ tweet.poll.total_votes|pluralize }}
-    </div>
+  </div>
   {% endif %}
 
-</div>
-{% endif %}
-
-  <!-- ================= ACTIONS ================= -->
+  <!-- ================= REACTIONS ================= -->
   <div class="post-footer">
-    <button class="reaction-btn">🔥</button>
-    <button class="reaction-btn">🏎️</button>
-    <button class="reaction-btn">🏆</button>
+
+    {% if user.is_authenticated %}
+
+      <!-- FIRE 🔥 -->
+      <form method="post" action="{% url 'react_to_tweet' tweet.id 'FIRE' %}" class="reaction-form">
+        {% csrf_token %}
+        <button type="submit" class="reaction-btn {% if tweet.user_reaction == 'FIRE' %}active{% endif %}">
+          <span class="reaction-emoji">🔥</span>
+          <span class="reaction-count">{{ tweet.fire_count }}</span>
+        </button>
+      </form>
+
+      <!-- TROPHY 🏆 -->
+      <form method="post" action="{% url 'react_to_tweet' tweet.id 'TROPHY' %}" class="reaction-form">
+        {% csrf_token %}
+        <button type="submit" class="reaction-btn {% if tweet.user_reaction == 'TROPHY' %}active{% endif %}">
+          <span class="reaction-emoji">🏆</span>
+          <span class="reaction-count">{{ tweet.trophy_count }}</span>
+        </button>
+      </form>
+
+      <!-- FLAG 🏁 -->
+      <form method="post" action="{% url 'react_to_tweet' tweet.id 'FLAG' %}" class="reaction-form">
+        {% csrf_token %}
+        <button type="submit" class="reaction-btn {% if tweet.user_reaction == 'FLAG' %}active{% endif %}">
+          <span class="reaction-emoji">🏁</span>
+          <span class="reaction-count">{{ tweet.flag_count }}</span>
+        </button>
+      </form>
+
+      <!-- ROCKET 🚀 -->
+      <form method="post" action="{% url 'react_to_tweet' tweet.id 'ROCKET' %}" class="reaction-form">
+        {% csrf_token %}
+        <button type="submit" class="reaction-btn {% if tweet.user_reaction == 'ROCKET' %}active{% endif %}">
+          <span class="reaction-emoji">🚀</span>
+          <span class="reaction-count">{{ tweet.rocket_count }}</span>
+        </button>
+      </form>
+
+      <!-- CRASH 💥 -->
+      <form method="post" action="{% url 'react_to_tweet' tweet.id 'CRASH' %}" class="reaction-form">
+        {% csrf_token %}
+        <button type="submit" class="reaction-btn {% if tweet.user_reaction == 'CRASH' %}active{% endif %}">
+          <span class="reaction-emoji">💥</span>
+          <span class="reaction-count">{{ tweet.crash_count }}</span>
+        </button>
+      </form>
+
+    {% else %}
+      <p class="reaction-message">
+        <a href="{% url 'login' %}">Login</a> to react to this post
+      </p>
+    {% endif %}
+
   </div>
 
 </div>
