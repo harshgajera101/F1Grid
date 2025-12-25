@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title %}Join F1Grid{% endblock %}
+
+{% block content %}
+<div class="form-page">
+  <div class="form-card">
+
+    <h2 class="form-title">Join F1Grid</h2>
+
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+
+      <button type="submit" class="btn-form-primary">
+        Create Account
+      </button>
+    </form>
+
+    <p class="form-muted">
+      Already on the grid?
+      <a href="{% url 'login' %}" class="text-warning">Login</a>
+    </p>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title %}Login | F1Grid{% endblock %}
+
+{% block content %}
+<div class="form-page">
+  <div class="form-card">
+
+    <h2 class="form-title">Welcome Back</h2>
+
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+
+      <button type="submit" class="btn-form-primary">
+        Login
+      </button>
+    </form>
+
+    <p class="form-muted">
+      Don’t have an account?
+      <a href="{% url 'register' %}" class="text-warning">Join F1Grid</a>
+    </p>
+
+  </div>
+</div>
+{% endblock %}

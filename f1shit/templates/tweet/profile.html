@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- ================= PROFILE HEADER ================= -->
+<section class="profile-header">
+  <div class="profile-avatar">
+    {{ profile_user.username|first|upper }}
+  </div>
+
+  <div class="profile-info">
+    <h2>@{{ profile_user.username }}</h2>
+    <p class="profile-bio">
+      Formula 1 fan • Opinions • Race weekends
+    </p>
+  </div>
+</section>
+
+<!-- ================= PROFILE STATS ================= -->
+<section class="profile-stats">
+  <div>
+    <strong>{{ tweets.count }}</strong>
+    <span>Posts</span>
+  </div>
+  <div>
+    <strong>F1</strong>
+    <span>Fan</span>
+  </div>
+  <div>
+    <strong>Active</strong>
+    <span>Racer</span>
+  </div>
+</section>
+
+<!-- ================= USER POSTS ================= -->
+<section class="profile-feed profile-post-list">
+  <h3>Posts by @{{ profile_user.username }}</h3>
+
+  {% for tweet in tweets %}
+    {% include "tweet/components/post_card.html" %}
+  {% empty %}
+    <p class="text-muted">No posts yet.</p>
+  {% endfor %}
+</section>
+
+{% endblock %}

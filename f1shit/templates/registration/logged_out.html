@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block title %}Logged Out | F1Grid{% endblock %}
+
+{% block content %}
+<div class="form-page">
+  <div class="form-card text-center">
+
+    <h2 class="form-title">Logged Out</h2>
+
+    <p class="text-muted mb-4">
+      You’ve been successfully logged out.
+    </p>
+
+    <a href="{% url 'login' %}" class="btn-form-primary">
+      Login Again
+    </a>
+
+  </div>
+</div>
+{% endblock %}

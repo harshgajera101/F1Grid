@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/png">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <title>{% block title %} F1Grid {% endblock %}</title>
+  </head>
+  <body>
+    <nav class="f1-navbar-3d">
+  <div class="nav-inner">
+
+    <!-- LEFT: LOGO -->
+    <div class="nav-left">
+      <a href="{% url 'tweet_list' %}" class="nav-logo">
+        <span class="flag">🏁</span>
+        <span class="logo-text">F1<span>Grid</span></span>
+      </a>
+    </div>
+
+    <!-- CENTER: MAIN NAV -->
+    <div class="nav-center">
+      <a href="{% url 'tweet_list' %}" class="nav-link active">Feed</a>
+      <a href="#" class="nav-link">Polls</a>
+      <a href="#" class="nav-link">Race Weekend</a>
+      <a href="#" class="nav-link">Drivers</a>
+    </div>
+
+    <!-- RIGHT: ACTIONS -->
+    <div class="nav-right">
+
+  {% if user.is_authenticated %}
+
+    <a href="{% url 'tweet_create' %}" class="btn-create">
+      + Create Post
+    </a>
+
+    <div class="user-chip">
+      <a href="{% url 'profile' user.username %}" class="user-handle">
+        @{{ user.username }}
+      </a>
+    </div>
+
+    <form method="post" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button class="btn-logout">Logout</button>
+    </form>
+
+  {% else %}
+
+    <div class="auth-actions">
+      <a href="{% url 'login' %}" class="btn-auth btn-login">Login</a>
+      <a href="{% url 'register' %}" class="btn-auth btn-signup">Sign Up</a>
+    </div>
+
+  {% endif %}
+
+</div>
+
+  </div>
+</nav>
+
+    <div class="container mt-5">{% block content %} {% endblock %}</div>
+  </body>
+</html>

@@ -1,0 +1,151 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- ================= HERO SECTION ================= -->
+<section class="hero-grid">
+  <div class="hero-content">
+    <span class="hero-tag">🏁 F1 FAN HUB</span>
+
+    <h1 class="hero-title">
+      The Grid <span>Never Sleeps</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Opinions, polls, memes, and race reactions —
+      <br />
+      all from the heart of Formula 1.
+    </p>
+
+    <div class="hero-actions">
+      <a href="{% url 'tweet_create' %}" class="btn-hero-primary">
+        + Create a Post
+      </a>
+      <a href="#feed" class="btn-hero-secondary">
+        Explore the Feed
+      </a>
+    </div>
+
+    <div class="hero-stats">
+      <div>
+        <strong>24/7</strong>
+        <span>Race Talk</span>
+      </div>
+      <div>
+        <strong>Fans</strong>
+        <span>Driven Community</span>
+      </div>
+      <div>
+        <strong>Live</strong>
+        <span>Polls & Reactions</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <img src="{% static 'images/f1-car1.png' %}" alt="F1 Car">
+  </div>
+</section>
+
+
+<!-- ================= RACE WEEKEND STRIP ================= -->
+<div class="race-weekend-strip">
+  <div class="race-left">
+    <span class="race-badge live">LIVE</span>
+    <h3>Italian Grand Prix</h3>
+    <p>Monza • Race Weekend Discussion</p>
+  </div>
+
+  <div class="race-right">
+    <span class="race-time">Sunday • Lights Out 6:30 PM IST</span>
+  </div>
+</div>
+
+
+<!-- ================= FEED ================= -->
+<section class="main-layout">
+
+  <!-- FEED -->
+  <div class="feed-column">
+    <div class="feed-filter-bar">
+      <span class="filter-label">Filter:</span>
+
+      <select class="filter-select">
+        <option>All Posts</option>
+        <option>Opinion</option>
+        <option>Meme</option>
+        <option>Poll</option>
+        <option>Race</option>
+      </select>
+
+      <select class="filter-select">
+        <option>All Teams</option>
+        <option>Red Bull</option>
+        <option>Ferrari</option>
+        <option>Mercedes</option>
+        <option>McLaren</option>
+      </select>
+
+      <select class="filter-select">
+        <option>All Drivers</option>
+        <option>Verstappen</option>
+        <option>Hamilton</option>
+        <option>Leclerc</option>
+        <option>Norris</option>
+      </select>
+    </div>
+
+    {% if tweets %}
+      {% for tweet in tweets %}
+        {% include "tweet/components/post_card.html" %}
+      {% endfor %}
+    {% else %}
+      <!-- Skeleton placeholders -->
+      <div class="post-card skeleton">
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line short"></div>
+        <div class="skeleton-line"></div>
+      </div>
+
+      <div class="post-card skeleton">
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line short"></div>
+        <div class="skeleton-line"></div>
+      </div>
+    {% endif %}
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <h4>🏁 Race Weekend</h4>
+      <p class="sidebar-muted">Next GP</p>
+      <strong>Italian Grand Prix</strong>
+      <span class="race-status live">LIVE</span>
+    </div>
+
+    <div class="sidebar-card">
+      <h4>🔥 Trending Drivers</h4>
+      <ul class="sidebar-list">
+        <li>Max Verstappen</li>
+        <li>Charles Leclerc</li>
+        <li>Lando Norris</li>
+        <li>Lewis Hamilton</li>
+      </ul>
+    </div>
+
+    <div class="sidebar-card">
+      <h4>📊 Active Polls</h4>
+      <ul class="sidebar-list">
+        <li>Who wins the race?</li>
+        <li>Best overtake today?</li>
+        <li>Driver of the day?</li>
+      </ul>
+    </div>
+  </aside>
+
+</section>
+
+{% endblock %}

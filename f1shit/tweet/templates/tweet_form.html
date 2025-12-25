@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% load form_tags %}
+
+{% block title %}
+  {% if form.instance.pk %} Edit Post {% else %} Create Post {% endif %} | F1Grid
+{% endblock %}
+
+{% block content %}
+<div class="form-page">
+  <div class="form-card">
+
+    <h2 class="form-title">
+      {% if form.instance.pk %}
+        Edit Post
+      {% else %}
+        Create Post
+      {% endif %}
+    </h2>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      {{ form.as_p }}
+
+      {% if poll_form %}
+        <hr />
+        <div id="poll-section" style="display:none;">
+          <h6 class="text-warning mt-3 mb-2">Poll Options</h6>
+          {{ poll_form.as_p }}
+        </div>
+      {% endif %}
+
+      <button type="submit" class="btn-form-primary">
+        {% if form.instance.pk %} Update {% else %} Post {% endif %}
+      </button>
+
+      <p class="form-muted">
+        <a href="{% url 'tweet_list' %}" class="text-muted">Cancel & return to feed</a>
+      </p>
+    </form>
+
+  </div>
+</div>
+{% endblock %}
+
+<script>
+  const postType = document.getElementById("id_post_type");
+  const pollSection = document.getElementById("poll-section");
+
+  function togglePoll() {
+    pollSection.style.display =
+      postType.value === "POLL" ? "block" : "none";
+  }
+
+  postType.addEventListener("change", togglePoll);
+  togglePoll();
+</script>

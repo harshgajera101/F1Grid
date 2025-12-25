@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}Delete Post | F1Grid{% endblock %}
+
+{% block content %}
+<div class="form-page">
+  <div class="form-card text-center">
+
+    <h2 class="form-title text-danger">Delete Post</h2>
+
+    <p class="form-muted mb-4">
+      Are you sure you want to delete this post?<br>
+      This action cannot be undone.
+    </p>
+
+    <form method="post">
+      {% csrf_token %}
+
+      <button type="submit" class="btn-form-danger">
+        Yes, Delete
+      </button>
+
+      <a href="{% url 'tweet_list' %}" class="btn-form-secondary">
+        Cancel
+      </a>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

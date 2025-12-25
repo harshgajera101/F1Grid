@@ -1,0 +1,90 @@
+<div class="post-card post-{{ tweet.post_type|lower }}">
+
+  <!-- ================= HEADER ================= -->
+  <div class="post-header">
+    <div class="post-user-info">
+      <a href="{% url 'profile' tweet.user.username %}" class="user-handle">
+        @{{ tweet.user.username }}
+      </a>
+      <span class="post-meta">
+        {{ tweet.created_at|date:"M d" }}
+        {% if tweet.team %} · {{ tweet.team }}{% endif %}
+        {% if tweet.driver %} · {{ tweet.driver }}{% endif %}
+      </span>
+    </div>
+
+    <div class="post-header-right">
+      <span class="post-type-badge">
+        {{ tweet.post_type|upper }}
+      </span>
+
+      {% if user == tweet.user %}
+        <div class="post-owner-actions">
+          <a href="{% url 'tweet_edit' tweet.id %}" class="post-edit">Edit</a>
+          <a href="{% url 'tweet_delete' tweet.id %}" class="post-delete">Delete</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ================= CONTENT ================= -->
+  <div class="post-body">
+    <p class="post-text">{{ tweet.text }}</p>
+
+    {% if tweet.photo %}
+      <div class="post-image">
+        <img src="{{ tweet.photo.url }}" alt="Post image">
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- ================= POLL ================= -->
+{% if tweet.post_type|lower == "poll" and tweet.poll %}
+<div class="poll-box">
+
+  {% if user.is_authenticated and not tweet.poll.has_voted %}
+    <!-- VOTING MODE -->
+    {% for option in tweet.poll.options.all %}
+      <form method="post" action="{% url 'poll_vote' option.id %}">
+        {% csrf_token %}
+        <button type="submit" class="poll-vote-btn">
+          {{ option.text }}
+        </button>
+      </form>
+    {% endfor %}
+
+  {% else %}
+    <!-- RESULTS MODE -->
+    {% for option in tweet.poll.options.all %}
+      {% with total=tweet.total_votes %}
+        {% if total > 0 %}
+          {% widthratio option.votes total 100 as percent %}
+        {% else %}
+          {% widthratio 0 1 0 as percent %}
+        {% endif %}
+
+        <div class="poll-result">
+          <div class="poll-label">
+            <span>{{ option.text }}</span>
+            <span>{{ percent }}%</span>
+          </div>
+
+          <div class="poll-bar">
+            <div class="poll-bar-fill" style="width: {{ percent }}%"></div>
+          </div>
+        </div>
+      {% endwith %}
+    {% endfor %}
+  {% endif %}
+
+</div>
+{% endif %}
+
+  <!-- ================= ACTIONS ================= -->
+  <div class="post-footer">
+    <button class="reaction-btn">🔥</button>
+    <button class="reaction-btn">🏎️</button>
+    <button class="reaction-btn">🏆</button>
+  </div>
+
+</div>
