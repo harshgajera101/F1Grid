@@ -247,12 +247,16 @@ F1Grid/
 ## 📸 Screenshots
 
 ### Home Feed
+<img width="1470" height="796" alt="Screenshot 2025-12-25 at 9 54 48 PM" src="https://github.com/user-attachments/assets/f257319a-e5ee-490d-8e8a-c98b6f0bd82d" />
 The main feed displays all posts with filtering options by type, team, and driver.
 
 ### Create Post
+<img width="800" height="761" alt="Screenshot 2025-12-26 at 8 20 50 PM" src="https://github.com/user-attachments/assets/83da8e49-e95e-4776-87b5-961ab3b10ae2" />
+
 Users can create different types of posts including polls with dynamic options.
 
 ### Profile Dashboard
+<img width="1470" height="797" alt="Screenshot 2025-12-25 at 9 56 37 PM" src="https://github.com/user-attachments/assets/1c77e7aa-3c2b-46a6-85b5-b10caf54fc8d" />
 Comprehensive user stats with retro F1 styling and activity breakdowns.
 
 
