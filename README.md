@@ -304,6 +304,7 @@ This project is open source and available for educational purposes.
 **Harsh Gajera**
 
 - GitHub: [@harshgajera101](https://github.com/harshgajera101)
+- LinkedIn: [gajera-harsh](https://www.linkedin.com/in/gajera-harsh)
 - Project Link: [F1Grid](https://github.com/harshgajera101/F1Grid)
 
 ---
