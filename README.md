@@ -252,6 +252,7 @@ The main feed displays all posts with filtering options by type, team, and drive
 
 ### Create Post
 <img width="800" height="761" alt="Screenshot 2025-12-26 at 8 20 50 PM" src="https://github.com/user-attachments/assets/83da8e49-e95e-4776-87b5-961ab3b10ae2" />
+
 Users can create different types of posts including polls with dynamic options.
 
 ### Profile Dashboard
